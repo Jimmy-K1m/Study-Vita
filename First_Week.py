@@ -1,6 +1,7 @@
 
 import numpy as np
 import cv2
+import math
 
 red_color = (0, 0, 255)
 
@@ -30,9 +31,25 @@ def calculate_neighborhood_average(image, center_x, center_y):
     return average_b, average_g, average_r
 
 
+def calculation_of_distance(total_average, index): 
+    if index == 0 :
+        squared_kiwi = math.pow((total_average[0]-44),2) + math.pow((total_average[1]-99),2) + math.pow((total_average[2]-106),2)
+        distance_from_object = math.sqrt(squared_kiwi)
+
+    elif index == 1:
+        squred_watermelon =  math.pow((total_average[0]-18),2) + math.pow((total_average[1]-6),2) + math.pow((total_average[2]-194),2)
+        distance_from_object = math.sqrt(squred_watermelon)
+
+    elif index == 2:
+        squared_orange =  math.pow((total_average[0]),2) + math.pow((total_average[1]-107),2) + math.pow((total_average[2]-254),2)
+        distance_from_object= math.sqrt(squared_orange)
+
+    return distance_from_object
+
+
 
 def main():
-    img_path = "C:\\Users\\orange.jpg"
+    img_path = "C:\\Users\\watermelon.jpg"
     image = cv2.imread(img_path)
     image = cv2.resize(image,(320,240))
 
@@ -78,10 +95,23 @@ def main():
     # Algorithm for classification with 3 dimension distances between two points(3차원 공간 상 가장 적은 거리를 가진 클래스를 선택하는 알고리즘) 
     # kiwi bgr(44,99,106) watermelon bgr(18,6,194) orange bgr(0,107,254)
 
+    total_average = [total_average_b,total_average_g,total_average_r]
+
+    item = [calculation_of_distance(total_average,0),calculation_of_distance(total_average,1),calculation_of_distance(total_average,2)]
+    index = item.index(min(item))
+
+    if min(item) > 30 : 
+        print("Wrong item is placed")
 
 
-
+    if index == 0 :
+        print("Kiwi juice is detected!\n" ,item[0])
+    elif index == 1 :
+        print("Watermelon juice is detected!\n",item[1])
+    elif index == 2 :
+        print("Orange juice is detected!\n",item[2])
     
+
     cv2.imshow("pin", pinned_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
